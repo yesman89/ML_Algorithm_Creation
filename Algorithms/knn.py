@@ -51,51 +51,168 @@ X_val_norm, X_test_norm, y_val, y_test = train_test_split(
 
 # distance can be manh, eucl, maxcoord
 # knn_type can class or regr
-class_num = 2
+
 class_1 = 'Iris-virginica'
 class_2 = 'Iris-versicolor'
 k = 5
-knn_type = 'class'
-distance = 'eucl'
+dist = 'man'
+
+testX = X_val_norm
+trainX = X_train_norm
+
+trainY = y_train
+
     
+def knnClass(trainX, trainY, testX, k, dist, class_1, class_2):
+#     """
+#     Notes on knnClass function:
+#
+#     Only accepts binomial classification
+#
+#     Inputs:
+#         trainX: the training set predictors
+#         trainY: the training label
+#         testX: the test set predictors
+#         k: hyperparameter to tune for number of datapoints in trainX closest to testX value
+#         dist: distance formula to use. Accepted values are eucl for euclidean distance,
+#               man for manhattan distnace, and maxc for max coordinate distance
+#         class_1 = input the name of the first class
+#         class_2 = input for the name of the second class
+#
+#     Outputs: Two lists with probability predictions for each class
+# 
+#     """
 
-if class_num == 2:
-    if distance == 'eucl':
-        if knn_type == 'class':
-            class1_pr_list = []
-            class2_pr_list = []
-            
-            for i in range(len(X_val_norm)):
-                list_val = []
-                for j in range(len(X_train_norm)):
-                    value = np.sqrt(np.sum(np.square(X_train_norm.iloc[j,] - X_val_norm.iloc[i,])))
-                    list_val.append(value)
-                    
-                list_val = np.array(list_val)
-                top_k = y_train.to_numpy()[np.argsort(list_val)][:k]
-                print(top_k)
-
-                pr1 = np.sum(top_k == class_1) / top_k.size
-                pr2 = np.sum(top_k == class_2) / top_k.size
+    if dist == 'eucl':
+        class1_pr_list = []
+        class2_pr_list = []
+        
+        for i in range(len(testX)):
+            list_val = []
+            for j in range(len(trainX)):
+                value = np.sqrt(np.sum(np.square(trainX.iloc[j,] - testX.iloc[i,])))
+                list_val.append(value)
                 
-                class1_pr_list.append(pr1)
-                class2_pr_list.append(pr2)
+            list_val = np.array(list_val)
+            top_k = trainY.to_numpy()[np.argsort(list_val)][:k]
+
+            pr1 = np.sum(top_k == class_1) / top_k.size
+            pr2 = np.sum(top_k == class_2) / top_k.size
+            
+            class1_pr_list.append(pr1)
+            class2_pr_list.append(pr2)
+            
+    elif dist == 'man':
+        class1_pr_list = []
+        class2_pr_list = []
+        
+        for i in range(len(testX)):
+            list_val = []
+            for j in range(len(trainX)):
+                value = np.sum(np.abs(trainX.iloc[j,] - testX.iloc[i,]))
+                list_val.append(value)
+                
+            list_val = np.array(list_val)
+            top_k = trainY.to_numpy()[np.argsort(list_val)][:k]
+
+            pr1 = np.sum(top_k == class_1) / top_k.size
+            pr2 = np.sum(top_k == class_2) / top_k.size
+            
+            class1_pr_list.append(pr1)
+            class2_pr_list.append(pr2) 
+            
+    elif dist == 'maxc':
+        class1_pr_list = []
+        class2_pr_list = []
+        
+        for i in range(len(testX)):
+            list_val = []
+            for j in range(len(trainX)):
+                value = np.abs(trainX.iloc[j,] - testX.iloc[i,])
+                list_val.append(value)
+            
+            list_val = np.array(list_val)
+            top_k = trainY.to_numpy()[np.argsort(list_val)][:k]
+
+            pr1 = np.sum(top_k == class_1) / top_k.size
+            pr2 = np.sum(top_k == class_2) / top_k.size
+            
+            class1_pr_list.append(pr1)
+            class2_pr_list.append(pr2)
+            
+    return class1_pr_list, class2_pr_list
 
 
+pr1, pr2 = knnClass(trainX, trainY, testX, k, dist, class_1, class_2)
 
 
-
-# def knn(trainX, trainY, testX, k = 2, type = 'class'):
+def knnRegr(trainX, trainY, testX, k, dist):
 #     """
-#     Notes on Knn
-
-#     First we want to have a normalized dataset for the X values 
-
-#     Next we want to build a function that brings in the training set seperated
-#     by predictors and label array, and the testing set of predictors and k values
-
-#     Next we want to 
+#     Notes on knnRegr function:
+#
+#     Only accepts binomial classification
+#
+#     Inputs:
+#         trainX: the training set predictors
+#         trainY: the training label
+#         testX: the test set predictors
+#         k: hyperparameter to tune for number of datapoints in trainX closest to testX value
+#         dist: distance formula to use. Accepted values are eucl for euclidean distance,
+#               man for manhattan distnace, and maxc for max coordinate distance
+#         class_1 = input the name of the first class
+#         class_2 = input for the name of the second class
+#
+#     Outputs: one lists with prediction values
+# 
 #     """
+
+    if dist == 'eucl':
+        avg_list = []
+        
+        for i in range(len(testX)):
+            list_val = []
+            for j in range(len(trainX)):
+                value = np.sqrt(np.sum(np.square(trainX.iloc[j,] - testX.iloc[i,])))
+                list_val.append(value)
+                
+            list_val = np.array(list_val)
+            top_k = trainY.to_numpy()[np.argsort(list_val)][:k]
+
+            avg = np.sum(top_k) / top_k.size
+            
+            avg_list.append(avg)
+            
+            
+    elif dist == 'maxc':
+        avg_list = []
+        
+        for i in range(len(testX)):
+            list_val = []
+            for j in range(len(trainX)):
+                value = np.abs(trainX.iloc[j,] - testX.iloc[i,])
+                list_val.append(value)
+            
+            list_val = np.array(list_val)
+            top_k = trainY.to_numpy()[np.argsort(list_val)][:k]
+
+            avg = np.sum(top_k) / top_k.size
+            
+            avg_list.append(avg)
+            
+            
+    return avg_list
+
+k = 5
+dist = 'man'
+
+testX = X_val_norm
+trainX = X_train_norm
+
+trainY = y_train
+
+avgs = knnRegr(trainX, trainY, testX, k, dist, class_1, class_2)
+
+
+
     
-a
-    
+  
