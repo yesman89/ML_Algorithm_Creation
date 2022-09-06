@@ -183,7 +183,7 @@ def knnRegr(trainX, trainY, testX, k, dist):
             avg_list.append(avg)
             
             
-    elif dist == 'maxc':
+    elif dist == 'man':
         avg_list = []
         
         for i in range(len(testX)):
@@ -201,17 +201,6 @@ def knnRegr(trainX, trainY, testX, k, dist):
             
             
     return avg_list
-
-k = 5
-dist = 'man'
-
-testX = X_val_norm
-trainX = X_train_norm
-
-trainY = y_train
-
-avgs = knnRegr(trainX, trainY, testX, k, dist, class_1, class_2)
-
 
 
     
