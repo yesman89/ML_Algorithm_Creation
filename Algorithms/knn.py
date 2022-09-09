@@ -158,7 +158,7 @@ def knnRegr(trainX, trainY, testX, k, dist):
 #         testX: the test set predictors
 #         k: hyperparameter to tune for number of datapoints in trainX closest to testX value
 #         dist: distance formula to use. Accepted values are eucl for euclidean distance,
-#               man for manhattan distnace, and maxc for max coordinate distance
+#               man for manhattan distance
 #         class_1 = input the name of the first class
 #         class_2 = input for the name of the second class
 #
