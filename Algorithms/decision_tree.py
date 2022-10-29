@@ -9,3 +9,4 @@ Created on Thu Oct 27 23:37:19 2022
 import pandas as pd
 import numpy as np
 
+# We will be utilizing the decision tree algorithm from youtube
